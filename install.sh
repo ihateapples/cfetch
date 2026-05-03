@@ -1,19 +1,32 @@
 set -e
 
-echo "[*] Building cfetch..."
+REPO="https://github.com/ihateapples/cfetch"
+TMP_DIR="/tmp/cfetch"
 
+echo "[*] removing old temp install..."
+rm -rf "$TMP_DIR"
+
+echo "[*] cloning repository..."
+
+git clone "$REPO" "$TMP_DIR"
+
+cd "$TMP_DIR"
+
+echo "[*] building cfetch..."
 make
 
-echo "[*] Installing to /usr/local/bin..."
+echo "[*] installing to /usr/local/bin..."
 
-# ensure target exists
 if [ ! -d "/usr/local/bin" ]; then
-    echo "[!] /usr/local/bin not found, creating it..."
+    echo "[!] creating /usr/local/bin..."
     sudo mkdir -p /usr/local/bin
 fi
 
-sudo cp cfetch /usr/local/bin/cfetch
-sudo chmod +x /usr/local/bin/cfetch
+sudo install -m 755 cfetch /usr/local/bin/cfetch
 
-echo "[✓] Installed successfully!"
-echo "[✓] Run it with: cfetch"
+echo "[*] cleaning up..."
+cd /
+rm -rf "$TMP_DIR"
+
+echo "[✓] cfetch installed successfully!"
+echo "[✓] run it with: cfetch"
