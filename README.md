@@ -2,7 +2,7 @@
 
 a lightweight system info tool written in c
 
-cfetch prints basic system information in a clean layout.
+cfetch prints basic system information in a clean layout. 
 
 ---
 
@@ -22,7 +22,18 @@ cfetch prints basic system information in a clean layout.
 - disk usage
 ---
 
-## build
+## automatic install (adds cfetch command to path)
+
+there’s an install script that builds and installs cfetch system-wide.
+
+```bash
+chmod +x install.sh
+./install.sh
+cfetch
+{output}
+```
+
+## manual build (doesn't add to path)
 
 ```bash
 make
