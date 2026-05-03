@@ -26,3 +26,7 @@ cfetch prints basic system information in a clean layout.
 
 ```bash
 make
+```
+
+# License
+cFetch is licensed under MIT. 
