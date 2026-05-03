@@ -7,5 +7,6 @@ void get_ram(char *out);
 void get_uptime(char *out);
 void get_shell(char *out);
 void get_disk(char *out);
+void get_distro(char *out);
 
 #endif

@@ -4,7 +4,7 @@
 #include <sys/statvfs.h>
 #include "system.h"
 
-/* ---------------- CPU ---------------- */
+/* get_cpu */
 void get_cpu(char *out) {
     FILE *f = fopen("/proc/cpuinfo", "r");
     if (!f) {
@@ -27,7 +27,7 @@ void get_cpu(char *out) {
     strcpy(out, "unknown");
 }
 
-/* ---------------- GPU (MULTI) ---------------- */
+/* get_gpu*/
 void get_gpu(char *out) {
     FILE *f = popen("lspci | grep -Ei 'vga|3d|display'", "r");
     if (!f) {
@@ -75,7 +75,7 @@ void get_gpu(char *out) {
     strcpy(out, buffer);
 }
 
-/* ---------------- RAM ---------------- */
+/* get_ram */
 void get_ram(char *out) {
     FILE *f = fopen("/proc/meminfo", "r");
     if (!f) {
@@ -100,7 +100,7 @@ void get_ram(char *out) {
             total / 1024);
 }
 
-/* ---------------- UPTIME ---------------- */
+/* get_uptime */
 void get_uptime(char *out) {
     FILE *f = fopen("/proc/uptime", "r");
     if (!f) {
@@ -119,14 +119,14 @@ void get_uptime(char *out) {
     sprintf(out, "%dh %dm", hr, min);
 }
 
-/* ---------------- SHELL ---------------- */
+/* get_shell */
 void get_shell(char *out) {
     char *s = getenv("SHELL");
     if (!s) s = "unknown";
     strcpy(out, s);
 }
 
-/* ---------------- DISK ---------------- */
+/* get_disk */
 void get_disk(char *out) {
     struct statvfs v;
 
@@ -142,4 +142,43 @@ void get_disk(char *out) {
     unsigned long total_mb = total / (1024 * 1024);
 
     sprintf(out, "%lu MB / %lu MB", used, total_mb);
+}
+
+/* get_distro */
+void get_distro(char *out) {
+    FILE *f = fopen("/etc/os-release", "r");
+    if (!f) {
+        strcpy(out, "unknown");
+        return;
+    }
+
+    char line[256];
+    char name[128] = {0};
+
+    while (fgets(line, sizeof(line), f)) {
+
+        if (strncmp(line, "PRETTY_NAME=", 12) == 0) {
+            char *start = strchr(line, '=') + 1;
+
+            // remove quotes if present
+            if (*start == '"') start++;
+
+            strncpy(name, start, sizeof(name) - 1);
+
+            // trim newline
+            name[strcspn(name, "\n")] = 0;
+
+            // remove trailing quote
+            size_t len = strlen(name);
+            if (len > 0 && name[len - 1] == '"')
+                name[len - 1] = 0;
+
+            fclose(f);
+            strcpy(out, name);
+            return;
+        }
+    }
+
+    fclose(f);
+    strcpy(out, "unknown");
 }

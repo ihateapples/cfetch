@@ -25,6 +25,7 @@ int main() {
     char up[128] = {0};
     char shell[128] = {0};
     char disk[256] = {0};
+    char distro[128];
 
     struct utsname u;
     uname(&u);
@@ -35,8 +36,9 @@ int main() {
     get_uptime(up);
     get_shell(shell);
     get_disk(disk);
+    get_distro(distro);
 
-    printf("%s   OS:      Linux\n", logo[0]);
+    printf("%s   OS:      %s\n", logo[0], distro);
     printf("%s   Kernel:  %s\n", logo[1], u.release);
     printf("%s   CPU:     %s\n", logo[2], cpu);
     printf("%s   %s\n", logo[3], gpu);
